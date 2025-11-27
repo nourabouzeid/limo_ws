@@ -3,7 +3,7 @@
 ## Cloning the Repository 
 
 ```bash
-git clone --recursive <your_repo_url>
+git clone --recursive https://github.com/nourabouzeid/limo_ws.git
 ```
 
 ### If you already cloned the repository without the --recursive flag, initialize the submodules manually:
