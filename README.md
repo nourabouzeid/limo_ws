@@ -26,4 +26,7 @@ roslaunch limo_gazebo_sim limo_four_diff.launch
 
 # Explorer
 roslaunch limo_explore explore.launch
+
+# Visual_search 
+roslauch roslaunch limo_visual_search visual_search.launch
 ```
