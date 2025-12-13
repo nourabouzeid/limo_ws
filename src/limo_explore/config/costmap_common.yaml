@@ -1,12 +1,45 @@
 # Reff: http://wiki.ros.org/costmap_2d
-global_frame: map
-robot_base_frame: base_link
-footprint: [[0.14, 0.14], [0.14, -0.14], [-0.14, -0.14], [-0.14, 0.14]]
-rolling_window: true
+# global_frame: map
+# robot_base_frame: base_link
+# footprint: [[0.14, 0.14], [0.14, -0.14], [-0.14, -0.14], [-0.14, 0.14]]
+# rolling_window: true
 
-inflation_radius: 0.5
-cost_scaling_factor: 4.0
+# inflation_radius: 0.5
+# cost_scaling_factor: 4.0
 
-track_unknown_space: true
-observation_sources: scan
-scan: {sensor_frame: laser, data_type: LaserScan, topic: /limo/scan, marking: true, clearing: true}
+# track_unknown_space: true
+# observation_sources: scan
+# scan: {sensor_frame: laser, data_type: LaserScan, topic: limo/scan, marking: true, clearing: true}
+
+
+#---standard pioneer footprint---
+#---(in meters)---
+
+footprint: [[-0.16, -0.11], [-0.16, 0.11], [0.16, 0.11], [0.16, -0.11]]
+footprint_padding: 0.02
+
+transform_tolerance: 0.2
+map_type: costmap
+
+always_send_full_costmap: true
+
+obstacle_layer:
+ enabled: true
+ obstacle_range: 3.0
+ raytrace_range: 4.0
+ inflation_radius: 0.2
+ track_unknown_space: true
+ combination_method: 1
+
+ observation_sources: laser_scan_sensor
+ laser_scan_sensor: {data_type: LaserScan, topic: scan, marking: true, clearing: true}
+
+
+inflation_layer:
+  enabled:              true
+  cost_scaling_factor:  10.0  # exponential rate at which the obstacle cost drops off (default: 10)
+  inflation_radius:     0.5  # max. distance from an obstacle at which costs are incurred for planning paths.
+
+static_layer:
+  enabled:              true
+  map_topic:            "/map"
