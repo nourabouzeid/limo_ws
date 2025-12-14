@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="limo_explore" type="recovery.py" name="recovery" output="screen" />
+</launch>

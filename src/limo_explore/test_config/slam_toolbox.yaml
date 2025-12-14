@@ -1,0 +1,27 @@
+odom_frame: odom
+map_frame: map
+base_frame: base_link
+scan_topic: /scan # Change this if your lidar topic is different
+
+# Karto SLAM Parameters
+resolution: 0.05 # Map resolution (meters/pixel)
+minimum_travel_distance: 0.2 # Minimum distance (m) required to process a new scan
+minimum_travel_angle: 0.17 # Minimum angle (rad) required to process a new scan
+
+# Scan Matcher Parameters
+laser_max_range: 20.0
+laser_min_range: 0.1
+laser_likelihood_sigma: 0.075
+laser_skip_rate: 1
+
+# Filtering/Thresholds
+use_scan_bunker: true
+scan_bunker_max_distance: 1.0
+scan_bunker_max_angle: 0.5
+
+# Optimization/Map Management
+loop_close_frequency: 0.0
+loop_search_maximum_distance: 2.0
+map_update_interval: 5.0 # How often (seconds) to publish the map
+publish_tf: true # Publish the map to odom transform
+use_jts: true # Use the Joint Tree Solver for optimization (recommended)
