@@ -1,44 +1,4 @@
 <launch>
-    <!-- use robot pose ekf to provide odometry-->
-    <node pkg="robot_pose_ekf" name="robot_pose_ekf" type="robot_pose_ekf">
-        <param name="output_frame" value="odom" />
-        <param name="base_footprint_frame" value="base_link"/>
-        <remap from="imu_data" to="imu" />
-    </node>
-
-    <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
-      <param name="map_update_interval" value="5.0"/>
-      <param name="maxUrange" value="16.0"/>
-      <param name="sigma" value="0.05"/>
-      <param name="kernelSize" value="1"/>
-      <param name="lstep" value="0.05"/>
-      <param name="astep" value="0.05"/>
-      <param name="iterations" value="5"/>
-      <param name="lsigma" value="0.075"/>
-      <param name="ogain" value="3.0"/>
-      <param name="lskip" value="0"/>
-      <param name="srr" value="0.1"/>
-      <param name="srt" value="0.2"/>
-      <param name="str" value="0.1"/>
-      <param name="stt" value="0.2"/>
-      <param name="linearUpdate" value="1.0"/>
-      <param name="angularUpdate" value="0.5"/>
-      <param name="temporalUpdate" value="3.0"/>
-      <param name="resampleThreshold" value="0.5"/>
-      <param name="particles" value="30"/>
-      <param name="xmin" value="-50.0"/>
-      <param name="ymin" value="-50.0"/>
-      <param name="xmax" value="50.0"/>
-      <param name="ymax" value="50.0"/>
-      <param name="delta" value="0.05"/>
-      <param name="llsamplerange" value="0.01"/>
-      <param name="llsamplestep" value="0.01"/>
-      <param name="lasamplerange" value="0.005"/>
-      <param name="lasamplestep" value="0.005"/>
-      <remap from="/scan" to="/limo/scan"/>
-
-    </node>
-
 
   <!-- 1) gmapping: build map from LIMO scan+odom -->
   <!-- <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
@@ -49,35 +9,35 @@
     <remap from="/scan" to="/limo/scan"/>
   </node> -->
 
-    <!-- SLAM Toolbox (ROS1 wrapper) -->
-  <!-- <node pkg="slam_toolbox" type="sync_slam_toolbox_node" name="slam_toolbox" output="screen">
+  <!-- SLAM Toolbox (ROS1 wrapper) -->
+  <node pkg="slam_toolbox" type="sync_slam_toolbox_node" name="slam_toolbox" output="screen">
     
-     Frame params 
+     <!-- Frame params  -->
     <param name="odom_frame" value="odom"/>
     <param name="map_frame" value="map"/>
     <param name="base_frame" value="base_link"/>
 
-     Lidar topic 
+     <!-- Lidar topic  -->
     <remap from="/scan" to="/limo/scan"/>
 
-     Core SLAM tuning 
+     <!-- Core SLAM tuning  -->
     <param name="use_scan_matching" value="true"/>
     <param name="use_scan_barycenter" value="true"/>
     <param name="minimum_travel_distance" value="0.1"/>
     <param name="minimum_travel_heading" value="0.1"/>
 
-     Map resolution + behavior 
+     <!-- Map resolution + behavior  -->
     <param name="resolution" value="0.05"/>
     <param name="max_laser_range" value="12.0"/>
     <param name="minimum_time_interval" value="0.5"/>
 
-     Loop closure 
+     <!-- Loop closure  -->
     <param name="enable_loop_closure" value="true"/>
     <param name="loop_search_radius" value="8.0"/>
     <param name="loop_match_min_chain_size" value="10"/>
     <param name="loop_match_max_variance_coarse" value="3.0"/>
 
-  </node> -->
+  </node>
 
 
   <!-- 2) move_base: path planning -->
@@ -91,25 +51,6 @@
       <rosparam file="$(find limo_explore)/config/planner_global.yaml" command="load" />
       <rosparam file="$(find limo_explore)/config/planner_local.yaml" command="load" />
   </node>
-
-
-    <!--  ************** Navigation ***************  -->
-	<!-- <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-      <remap from="/scan" to="/limo/scan"/>
-  	  <rosparam file="$(find limo_explore)/config/costmap_common.yaml" command="load" ns="global_costmap" />
-  	 	<rosparam file="$(find limo_explore)/config/costmap_common.yaml" command="load" ns="local_costmap" />
-  		<rosparam file="$(find limo_explore)/config/local_costmap.yaml" command="load" />
-  		<rosparam file="$(find limo_explore)/config/global_costmap.yaml" command="load" />
-  		<rosparam file="$(find limo_explore)/config/planner.yaml" command="load" />
-
-      <param name="base_global_planner" value="global_planner/GlobalPlanner" />
-      <param name="planner_frequency" value="1.0" />
-      <param name="planner_patience" value="5.0" />
-      <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS" />
-      <param name="controller_frequency" value="5.0" />
-      <param name="controller_patience" value="15.0" />
-      <param name="clearing_rotation_allowed" value="true" />
-    </node> -->
 
   <!-- 3) explore_lite: frontier generator -->
   <!-- <node pkg="explore_lite" type="explore" respawn="true" name="explore" output="screen">

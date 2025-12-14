@@ -8,7 +8,7 @@
 
         <!-- Pass your image path as a parameter -->
         <param name="target_image"
-               value="/home/zeyad/limo_ws/assets/car_wheel.png" />
+               value="$(find limo_explore)/../../assets/car_wheel.png" />
     </node>
 
 </launch>
