@@ -1,14 +1,11 @@
 <launch>
-    <param name="use_sim_time" value="true"/>
-    <!-- Start visual search node -->
     <node pkg="limo_visual_search"
-          type="visual_search_node.py"
-          name="visual_search_node"
+          type="visual_search_yolo.py"
+          name="visual_search_yolo"
           output="screen">
 
-        <!-- Pass your image path as a parameter -->
-        <param name="target_image"
-               value="/home/zeyad/limo_ws/assets/car_wheel.png" />
-    </node>
+        <param name="target_class" value="bowl"/>
+        <param name="model_path" value="yolov8n.pt"/>
 
+    </node>
 </launch>
