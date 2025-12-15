@@ -1,0 +1,11 @@
+<launch>
+
+  <include file="$(find limo_explore)/launch/single_slam.launch">
+    <arg name="robot_name" value="robot1"/>
+  </include>
+
+  <include file="$(find limo_explore)/launch/single_slam.launch">
+    <arg name="robot_name" value="robot2"/>
+  </include>
+
+</launch>

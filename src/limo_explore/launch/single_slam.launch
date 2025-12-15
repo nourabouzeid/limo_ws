@@ -1,0 +1,42 @@
+<launch>
+  <arg name="robot_name"/>
+
+  <group ns="$(arg robot_name)">
+
+    <!-- Laser -->
+    <remap from="/scan" to="scan"/>
+
+    <!-- EKF -->
+    <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="ekf">
+      <param name="output_frame" value="odom"/>
+      <param name="base_footprint_frame" value="base_link"/>
+      <remap from="imu_data" to="imu"/>
+    </node>
+
+    <!-- SLAM -->
+    <node pkg="slam_toolbox" type="sync_slam_toolbox_node"
+          name="slam_toolbox">
+      <rosparam file="$(find limo_explore)/test_config/slam_toolbox.yaml"
+                command="load"/>
+    </node>
+
+    <!-- Navigation -->
+    <node pkg="move_base" type="move_base" name="move_base">
+      <rosparam file="$(find limo_explore)/test_config/costmap_common_params.yaml"
+                command="load" ns="global_costmap"/>
+      <rosparam file="$(find limo_explore)/test_config/costmap_common_params.yaml"
+                command="load" ns="local_costmap"/>
+      <rosparam file="$(find limo_explore)/test_config/local_costmap_params.yaml"
+                command="load"/>
+      <rosparam file="$(find limo_explore)/test_config/global_costmap_params.yaml"
+                command="load"/>
+    </node>
+
+    <!-- Exploration -->
+    <node pkg="explore_lite" type="explore" name="explore" respawn="true">
+      <rosparam file="$(find limo_explore)/config/exploration.yaml"
+                command="load"/>
+    </node>
+
+  </group>
+</launch>
