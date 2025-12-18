@@ -9,7 +9,7 @@ def initial_rotator():
     cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 
     angular_speed = 1
-    duration = 10.0       
+    duration = 5.0       
 
     rospy.loginfo("Initial Rotator: Waiting for ROS time to start...")
     while rospy.Time.now() == rospy.Time(0):

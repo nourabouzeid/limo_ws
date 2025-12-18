@@ -9,8 +9,8 @@ import math
 import time
 
 # --- Configuration Constants ---
-LINEAR_SPEED = 0.5      # m/s for recovery move
-ANGULAR_SPEED = 1.25     # rad/s for rotation (collision avoidance)
+LINEAR_SPEED = 0.2      # m/s for recovery move
+ANGULAR_SPEED = 1    # rad/s for rotation (collision avoidance)
 RECOVERY_DURATION = 3.0 # seconds to move forward or rotate to recover
 STALL_THRESHOLD = 10.0  # seconds of no movement before recovery move
 MAX_LINEAR_VEL = 0.05   # m/s: Maximum linear velocity magnitude to count as 'not moving'
@@ -30,7 +30,7 @@ class StallDetector:
         self.odom_sub = rospy.Subscriber('/odom', Odometry, self.odom_callback)
         self.frontier_sub = rospy.Subscriber('/explore/frontiers', MarkerArray, self.frontier_callback)
         # NEW: Subscriber for Lidar Scan data
-        self.scan_sub = rospy.Subscriber('/limo/scan', LaserScan, self.scan_callback) 
+        self.scan_sub = rospy.Subscriber('/scan', LaserScan, self.scan_callback) 
         
         # --- State Variables ---
         self.last_odom_time = rospy.Time.now()
