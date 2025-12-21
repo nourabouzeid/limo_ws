@@ -17,7 +17,7 @@ class AdvancedVisualSearchYOLO:
         self.history = deque(maxlen=5)
 
         # Load YOLO model
-        self.model = YOLO("yolov8n.pt")  # You can change to yolov8s.pt or your custom model
+        self.model = YOLO("yolov8s-oiv7.pt")  # You can change to yolov8s.pt or your custom model
 
 
         # Print all class labels the model was trained on
