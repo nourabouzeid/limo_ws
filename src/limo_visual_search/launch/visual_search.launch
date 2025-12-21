@@ -1,5 +1,20 @@
 <launch>
     <node pkg="limo_visual_search"
+          type="visual_search_node.py"
+          name="visual_search_node"
+          output="screen">
+
+        <param name="target_image_path"
+               value="/home/zeyad/limo_ws/assets/stop_sign.png"/>
+
+        
+
+    </node>
+</launch>
+
+
+<!-- <launch>
+    <node pkg="limo_visual_search"
           type="visual_search_yolo.py"
           name="visual_search_yolo"
           output="screen">
@@ -8,4 +23,4 @@
         <param name="model_path" value="yolov8n.pt"/>
 
     </node>
-</launch>
+</launch> -->

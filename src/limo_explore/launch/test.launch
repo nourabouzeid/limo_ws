@@ -1,8 +1,10 @@
 <launch>
+    <remap from="/scan" to="/limo/scan"/>
     <node pkg="robot_pose_ekf" name="robot_pose_ekf" type="robot_pose_ekf">
         <param name="output_frame" value="odom" />
         <param name="base_footprint_frame" value="base_link"/>
         <remap from="imu_data" to="imu" />
+        
     </node>
 
     <!-- <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
@@ -36,7 +38,7 @@
       <param name="lasamplestep" value="0.005"/>
     </node> -->
 
-    <!-- <remap from="/scan" to="/limo/scan"/> -->
+   
     <!-- use robot pose ekf to provide odometry-->
     <!-- <node pkg="robot_pose_ekf" name="robot_pose_ekf" type="robot_pose_ekf">
         <param name="output_frame" value="odom" />
@@ -107,17 +109,17 @@
 
     <node pkg="limo_explore" type="initial_rotator.py" name="rotator_startup" output="screen" />
 
-    <!-- <node pkg="limo_explore" type="recovery.py" name="recovery" output="screen" /> -->
+    <node pkg="limo_explore" type="recovery.py" name="recovery" output="screen" />
 
 
     <!-- 3) explore_lite: frontier generator -->
     <node pkg="explore_lite" type="explore" respawn="true" name="explore" output="screen" launch-prefix="bash -c 'sleep 10.0; $0 $@' ">
         <rosparam file="$(find limo_explore)/config/exploration.yaml" command="load" />
     </node>
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+    <!-- <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
     
     <param name="robot_description" command="$(find xacro)/xacro '$(find limo_description)/urdf/limo_four_diff.xacro'
     robot_namespace:=/" />
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find limo_description)/rviz/model_display.rviz" />
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find limo_description)/rviz/model_display.rviz" /> -->
   
 </launch>

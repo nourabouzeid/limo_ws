@@ -1,61 +1,71 @@
 #!/usr/bin/env python3
 
 import rospy
-import cv2
-import numpy as np
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 from std_msgs.msg import Bool
-class VisualSearchNode:
+import cv2
+from ultralytics import YOLO
+from collections import deque
+
+class AdvancedVisualSearchYOLO:
     def __init__(self):
-        rospy.init_node("visual_search_node")
+        rospy.init_node("advanced_visual_search_yolo")
 
-
-        # Load target object image
-        target_img_path = rospy.get_param("~target_image")
-        self.target_img = cv2.imread(target_img_path, 0)
-        if self.target_img is None:
-            rospy.logerr("Could not load target image!")
-            exit()
-
-        # ORB detector
-        self.orb = cv2.ORB_create(1000)
-        self.kp_target, self.des_target = self.orb.detectAndCompute(self.target_img, None)
-
-        # Camera subscriber
+        self.target_image_path = rospy.get_param("~target_image_path", "")
         self.bridge = CvBridge()
-        rospy.Subscriber("/limo/color/image_raw", Image, self.camera_callback)
+        self.history = deque(maxlen=5)
 
-        # Publisher: True/False
-        self.result_pub = rospy.Publisher("/visual_search/target_found", 
-                                          Bool, queue_size=1)
+        # Load YOLO model
+        self.model = YOLO("yolov8n.pt")  # You can change to yolov8s.pt or your custom model
 
-        rospy.loginfo("Visual search node running...")
+
+        # Print all class labels the model was trained on
+        print("YOLO trained labels:")
+        for i, label in self.model.names.items():
+            print(f"{i}: {label}")
+
+        # Detect object in target image and get label
+        target_img = cv2.imread(self.target_image_path)
+        target_img = cv2.resize(target_img, (640, 480))
+        target_results = self.model(target_img)
+        if len(target_results[0].boxes) == 0:
+            rospy.logerr("No objects detected in target image!")
+            self.target_label = None
+        else:
+            # Take first detected object (can be enhanced to pick largest/confident one)
+            self.target_label = target_results[0].names[int(target_results[0].boxes.cls[0])]
+            rospy.loginfo(f"Target label: {self.target_label}")
+        
+        # ROS subscribers and publishers
+        rospy.Subscriber("/limo/color/image_raw", Image, self.callback, queue_size=1)
+        self.pub = rospy.Publisher("/visual_search/target_found", Bool, queue_size=1)
+
         rospy.spin()
 
-    def camera_callback(self, msg):
-        frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    def callback(self, msg):
+        frame = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+        frame = cv2.resize(frame, (640, 480))
 
-        # Extract ORB features
-        kp_frame, des_frame = self.orb.detectAndCompute(gray, None)
-        if des_frame is None:
-            return
+        results = self.model(frame)
+        detected = False
 
-        # Match descriptors
-        bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-        matches = bf.match(self.des_target, des_frame)
-        matches = sorted(matches, key=lambda x: x.distance)
+        for box in results[0].boxes:
+            label = results[0].names[int(box.cls)]
+            if label == self.target_label:
+                detected = True
+                break
 
-        # Determine if object is found
-        GOOD_MATCH_THRESHOLD = 25  # tune this value
-        if len(matches) > GOOD_MATCH_THRESHOLD:
-            rospy.loginfo("TARGET OBJECT FOUND!")
-            self.result_pub.publish(True)
-            
-        else:
-            self.result_pub.publish(False)
-            
+        self.history.append(detected)
+        confirmed = all(self.history) and len(self.history) == 5
+        self.pub.publish(confirmed)
+
+        rospy.loginfo(f"Detected={detected}, confirmed={confirmed}")
+
+
 
 if __name__ == "__main__":
-    VisualSearchNode()
+    try:
+        AdvancedVisualSearchYOLO()
+    except rospy.ROSInterruptException:
+        pass
